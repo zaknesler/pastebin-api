@@ -1,10 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "d5bca48e56bbf3a25645858fcab9c285",
+    "content-hash": "729d32ec28f5c6d7b65d5e434b070649",
     "packages": [
         {
             "name": "dnoegel/php-xdg-base-dir",
@@ -2293,6 +2293,56 @@
                 "environment"
             ],
             "time": "2018-07-29T20:33:41+00:00"
+        },
+        {
+            "name": "zaknesler/tailwind-preset",
+            "version": "dev-laravel-5.7",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/zaknesler/tailwind-preset.git",
+                "reference": "ec3315b38fbe4270dc8a13bc2ccd7810e598abe3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/zaknesler/tailwind-preset/zipball/ec3315b38fbe4270dc8a13bc2ccd7810e598abe3",
+                "reference": "ec3315b38fbe4270dc8a13bc2ccd7810e598abe3",
+                "shasum": ""
+            },
+            "require": {
+                "laravel/framework": "^5.5"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "ZakNesler\\TailwindPreset\\TailwindServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "ZakNesler\\TailwindPreset\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Zak Nesler",
+                    "email": "contact@zaknesler.com"
+                }
+            ],
+            "description": "A Tailwind CSS preset for Laravel.",
+            "keywords": [
+                "laravel",
+                "laravel preset",
+                "preset",
+                "tailwind",
+                "tailwindcss"
+            ],
+            "time": "2018-08-21T02:19:18+00:00"
         }
     ],
     "packages-dev": [
@@ -3992,7 +4042,9 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": [],
+    "stability-flags": {
+        "zaknesler/tailwind-preset": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
