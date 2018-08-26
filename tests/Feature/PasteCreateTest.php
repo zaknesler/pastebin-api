@@ -22,9 +22,6 @@ class PasteCreateTest extends TestCase
         ]);
 
         $response->assertJsonFragment([
-            'name' => 'this is an example paste',
-            'body' => 'this is the body of the paste',
-            'visibility' => 'public',
             'user' => null,
         ]);
     }
@@ -40,9 +37,6 @@ class PasteCreateTest extends TestCase
         ]);
 
         $response->assertJsonFragment([
-            'name' => 'this is an example paste',
-            'body' => 'this is the body of the paste',
-            'visibility' => 'public',
             'language' => 'html',
         ]);
     }
@@ -74,9 +68,6 @@ class PasteCreateTest extends TestCase
         ]);
 
         $response->assertJsonFragment([
-            'name' => 'this is an example paste',
-            'body' => 'this is the body of the paste',
-            'visibility' => 'public',
             'user' => [
                 'name' => 'Example',
                 'email' => 'example@example.com',
