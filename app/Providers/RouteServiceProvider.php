@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Paste;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 
@@ -23,7 +24,7 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        Route::model('paste', Paste::class);
 
         parent::boot();
     }

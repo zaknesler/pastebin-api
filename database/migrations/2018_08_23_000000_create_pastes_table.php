@@ -17,6 +17,7 @@ class CreatePastesTable extends Migration
             $table->increments('id');
             $table->integer('user_id')->unsigned()->index()->nullable();
             $table->string('name');
+            $table->string('slug')->unique()->nullable();
             $table->text('body');
             $table->string('language')->nullable();
             $table->enum('visibility', ['public', 'private', 'unlisted']);

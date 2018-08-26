@@ -13,6 +13,7 @@ class Paste extends Model
      */
     protected $fillable = [
         'name',
+        'slug',
         'body',
         'language',
         'visibility',
@@ -27,6 +28,16 @@ class Paste extends Model
     protected $dates = [
         'expires_at',
     ];
+
+    /**
+     * Get the route key for the model.
+     *
+     * @return string
+     */
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
 
     /**
      * A paste can belong to a user.

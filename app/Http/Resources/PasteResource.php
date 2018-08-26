@@ -17,6 +17,7 @@ class PasteResource extends JsonResource
     {
         return [
             'name' => $this->name,
+            'slug' => $this->slug,
             'body' => $this->body,
             'visibility' => $this->visibility,
             'language' => $this->language,
