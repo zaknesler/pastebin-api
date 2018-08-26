@@ -9,3 +9,15 @@ $factory->define(App\Paste::class, function (Faker $faker) {
         'visibility' => 'public',
     ];
 });
+
+$factory->state(App\Paste::class, 'public', [
+    'visibility' => 'public',
+]);
+
+$factory->state(App\Paste::class, 'private', [
+    'visibility' => 'private',
+]);
+
+$factory->state(App\Paste::class, 'unlisted', [
+    'visibility' => 'unlisted',
+]);

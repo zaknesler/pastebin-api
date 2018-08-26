@@ -9,6 +9,26 @@ use App\Http\Resources\PasteResource;
 class PasteController extends Controller
 {
     /**
+     * Display the paste.
+     *
+     * @param  \App\Paste
+     * @return \Illuminate\Http\Response
+     */
+    public function show(Paste $paste)
+    {
+        if (auth()->id() == $paste->user_id
+            && $paste->visibility == 'private') {
+            abort(404);
+        }
+
+        if (optional($paste->expires_at)->lte(now())) {
+            abort(404);
+        }
+
+        return new PasteResource($paste);
+    }
+
+    /**
      * Store a paste in the database.
      *
      * @param  \Illuminate\Http\Request  $request
