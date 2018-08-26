@@ -40,6 +40,20 @@ class Paste extends Model
     }
 
     /**
+     * The "booting" method of the model.
+     *
+     * @return void
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function (Paste $paste) {
+            $paste->slug = str_random(8);
+        });
+    }
+
+    /**
      * Determine if a paste is marked as private.
      *
      * @return boolean
