@@ -40,6 +40,32 @@ class Paste extends Model
     }
 
     /**
+     * Determine if a paste is marked as private.
+     *
+     * @return boolean
+     */
+    public function isPrivate()
+    {
+        return $this->visibility == 'private';
+    }
+
+    /**
+     * Determine if a paste is owned by a user.
+     *
+     * @param  \App\User|null  $user
+     * @return boolean
+     */
+
+    public function isOwnedBy(User $user = null)
+    {
+        if (is_null($user)) {
+            return false;
+        }
+
+        return (bool) optional($this->user_id) == $user->id;
+    }
+
+    /**
      * A paste can belong to a user.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

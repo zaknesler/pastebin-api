@@ -9,15 +9,16 @@ use App\Http\Resources\PasteResource;
 class PasteController extends Controller
 {
     /**
-     * Display the paste.
+     * Display a paste by its slug.
      *
-     * @param  \App\Paste
+     * @param  \App\Paste  $paste
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function show(Paste $paste)
+    public function show(Paste $paste, Request $request)
     {
-        if (auth()->id() == $paste->user_id
-            && $paste->visibility == 'private') {
+        if ($paste->isPrivate()
+            && !$paste->isOwnedBy(request()->user())) {
             abort(404);
         }
 
