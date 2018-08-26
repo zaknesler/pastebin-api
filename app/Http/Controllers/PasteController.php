@@ -47,6 +47,10 @@ class PasteController extends Controller
 
         $paste = Paste::create($request->all());
 
+        if ($request->visibility == 'private' && !auth()->check()) {
+            abort(401, 'You must be signed in to make a private paste.');
+        }
+
         if ($user = $request->user()) {
             $paste->user()->associate($user);
         }

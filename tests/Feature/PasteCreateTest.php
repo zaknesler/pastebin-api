@@ -76,6 +76,50 @@ class PasteCreateTest extends TestCase
     }
 
     /** @test */
+    function a_paste_can_be_unlisted()
+    {
+        $this->actingAs(factory(User::class)->create());
+
+        $response = $this->post('/api/pastes', [
+            'name' => 'this is an example paste',
+            'body' => 'this is the body of the paste',
+            'visibility' => 'unlisted',
+        ]);
+
+        $response->assertJsonFragment([
+            'visibility' => 'unlisted',
+        ]);
+    }
+
+    /** @test */
+    function a_paste_can_be_private()
+    {
+        $this->actingAs(factory(User::class)->create());
+
+        $response = $this->post('/api/pastes', [
+            'name' => 'this is an example paste',
+            'body' => 'this is the body of the paste',
+            'visibility' => 'private',
+        ]);
+
+        $response->assertJsonFragment([
+            'visibility' => 'private',
+        ]);
+    }
+
+    /** @test */
+    function must_be_authenticated_to_create_a_private_paste()
+    {
+        $response = $this->post('/api/pastes', [
+            'name' => 'this is an example paste',
+            'body' => 'this is the body of the paste',
+            'visibility' => 'private',
+        ]);
+
+        $response->assertStatus(401);
+    }
+
+    /** @test */
     function a_paste_can_have_an_expiration_date()
     {
         $response = $this->post('/api/pastes', [
