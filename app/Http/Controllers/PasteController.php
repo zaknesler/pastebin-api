@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Paste;
 use Illuminate\Http\Request;
+use App\Errors\MustBeAuthenticated;
+use App\Http\Resources\ErrorResource;
 use App\Http\Resources\PasteResource;
 
 class PasteController extends Controller
@@ -48,7 +50,7 @@ class PasteController extends Controller
         $paste = Paste::create($request->all());
 
         if ($request->visibility == 'private' && !auth()->check()) {
-            abort(401, 'You must be signed in to make a private paste.');
+            return new ErrorResource(new MustBeAuthenticated);
         }
 
         if ($user = $request->user()) {

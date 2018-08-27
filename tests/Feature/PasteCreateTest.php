@@ -117,6 +117,10 @@ class PasteCreateTest extends TestCase
         ]);
 
         $response->assertStatus(401);
+        $response->assertJsonFragment([
+            'message' => 'You must be authenticated to create a private paste.',
+            'status' => 401,
+        ]);
     }
 
     /** @test */
