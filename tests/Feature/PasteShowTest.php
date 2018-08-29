@@ -17,7 +17,7 @@ class PasteShowTest extends TestCase
     {
         $paste = factory(Paste::class)->states('public')->create();
 
-        $response = $this->get("/api/pastes/$paste->slug");
+        $response = $this->json('GET', "/api/pastes/$paste->slug");
 
         $response->assertJsonStructure([
             'data' => [
@@ -35,7 +35,7 @@ class PasteShowTest extends TestCase
     {
         $paste = factory(Paste::class)->states('public')->create();
 
-        $response = $this->get("/api/pastes/$paste->slug");
+        $response = $this->json('GET', "/api/pastes/$paste->slug");
 
         $response->assertSuccessful();
     }
@@ -45,7 +45,7 @@ class PasteShowTest extends TestCase
     {
         $paste = factory(Paste::class)->states('unlisted')->create();
 
-        $response = $this->get("/api/pastes/$paste->slug");
+        $response = $this->json('GET', "/api/pastes/$paste->slug");
 
         $response->assertJsonStructure([
             'data' => [
@@ -65,7 +65,7 @@ class PasteShowTest extends TestCase
             'expires_at' => now()->subDays(1),
         ]);
 
-        $response = $this->get("/api/pastes/$paste->slug");
+        $response = $this->json('GET', "/api/pastes/$paste->slug");
 
         $response->assertStatus(404);
     }
@@ -76,7 +76,7 @@ class PasteShowTest extends TestCase
         $paste = factory(Paste::class)->states('private')->create();
         $paste->user()->associate(factory(User::class)->create());
 
-        $response = $this->get("/api/pastes/$paste->slug");
+        $response = $this->json('GET', "/api/pastes/$paste->slug");
 
         $response->assertStatus(404);
     }
@@ -89,7 +89,7 @@ class PasteShowTest extends TestCase
         $paste = factory(Paste::class)->states('private')->create();
         $paste->user()->associate($user);
 
-        $response = $this->get("/api/pastes/$paste->slug");
+        $response = $this->json('GET', "/api/pastes/$paste->slug");
 
         $response->assertSuccessful();
         $response->assertJsonStructure([

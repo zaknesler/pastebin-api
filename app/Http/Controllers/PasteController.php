@@ -11,40 +11,31 @@ use App\Http\Resources\PasteResource;
 class PasteController extends Controller
 {
     /**
-     * Display a paste by its slug.
+     * Display a listing of all pastes.
      *
-     * @param  \App\Paste  $paste
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Resources\Json\JsonResource
      */
-    public function show(Paste $paste, Request $request)
+    public function index()
     {
-        if ($paste->isPrivate()
-            && !$paste->isOwnedBy(request()->user())) {
-            abort(404);
-        }
+        $pastes = Paste::paginate(10);
 
-        if (optional($paste->expires_at)->lte(now())) {
-            abort(404);
-        }
-
-        return new PasteResource($paste);
+        return PasteResource::collection($pastes);
     }
 
     /**
      * Store a paste in the database.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Resources\Json\JsonResource
      */
     public function store(Request $request)
     {
         $request->validate([
             'name' => 'required',
             'body' => 'required',
-            'language' => 'nullable|in:' . implode(',', config('pastebin.languages')),
             'visibility' => 'required|in:public,private,unlisted',
-            'expires_at' => 'date|after:now',
+            'language' => 'nullable|in:' . implode(',', config('pastebin.languages')),
+            'expires_at' => 'nullable|date|after:now',
         ]);
 
         $paste = Paste::create($request->all());
@@ -55,6 +46,27 @@ class PasteController extends Controller
 
         if ($user = $request->user()) {
             $paste->user()->associate($user);
+        }
+
+        return new PasteResource($paste);
+    }
+
+    /**
+     * Display a paste by its slug.
+     *
+     * @param  \App\Paste  $paste
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Resources\Json\JsonResource
+     */
+    public function show(Paste $paste, Request $request)
+    {
+        if ($paste->isPrivate()
+            && !$paste->isOwnedBy(request()->user())) {
+            abort(404);
+        }
+
+        if (optional($paste->expires_at)->lte(now())) {
+            abort(404);
         }
 
         return new PasteResource($paste);

@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\User;
 use App\Paste;
 use Tests\TestCase;
+use App\Http\Resources\PasteResource;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -15,7 +16,7 @@ class PasteCreateTest extends TestCase
     /** @test */
     function a_paste_can_be_created_by_a_guest()
     {
-        $response = $this->post('/api/pastes', [
+        $response = $this->json('POST', '/api/pastes', [
             'name' => 'this is an example paste',
             'body' => 'this is the body of the paste',
             'visibility' => 'public',
@@ -29,7 +30,7 @@ class PasteCreateTest extends TestCase
     /** @test */
     function a_paste_can_have_a_language()
     {
-        $response = $this->post('/api/pastes', [
+        $response = $this->json('POST', '/api/pastes', [
             'name' => 'this is an example paste',
             'body' => 'this is the body of the paste',
             'visibility' => 'public',
@@ -44,7 +45,7 @@ class PasteCreateTest extends TestCase
     /** @test */
     function creating_a_paste_returns_a_successful_status_code()
     {
-        $response = $this->post('/api/pastes', [
+        $response = $this->json('POST', '/api/pastes', [
             'name' => 'this is an example paste',
             'body' => 'this is the body of the paste',
             'visibility' => 'public',
@@ -61,7 +62,7 @@ class PasteCreateTest extends TestCase
             'email' => 'example@example.com'
         ]));
 
-        $response = $this->post('/api/pastes', [
+        $response = $this->json('POST', '/api/pastes', [
             'name' => 'this is an example paste',
             'body' => 'this is the body of the paste',
             'visibility' => 'public',
@@ -80,7 +81,7 @@ class PasteCreateTest extends TestCase
     {
         $this->actingAs(factory(User::class)->create());
 
-        $response = $this->post('/api/pastes', [
+        $response = $this->json('POST', '/api/pastes', [
             'name' => 'this is an example paste',
             'body' => 'this is the body of the paste',
             'visibility' => 'unlisted',
@@ -96,7 +97,7 @@ class PasteCreateTest extends TestCase
     {
         $this->actingAs(factory(User::class)->create());
 
-        $response = $this->post('/api/pastes', [
+        $response = $this->json('POST', '/api/pastes', [
             'name' => 'this is an example paste',
             'body' => 'this is the body of the paste',
             'visibility' => 'private',
@@ -110,7 +111,7 @@ class PasteCreateTest extends TestCase
     /** @test */
     function must_be_authenticated_to_create_a_private_paste()
     {
-        $response = $this->post('/api/pastes', [
+        $response = $this->json('POST', '/api/pastes', [
             'name' => 'this is an example paste',
             'body' => 'this is the body of the paste',
             'visibility' => 'private',
@@ -126,11 +127,11 @@ class PasteCreateTest extends TestCase
     /** @test */
     function a_paste_can_have_an_expiration_date()
     {
-        $response = $this->post('/api/pastes', [
+        $response = $this->json('POST', '/api/pastes', [
             'name' => 'this is an example paste',
             'body' => 'this is the body of the paste',
             'visibility' => 'public',
-            'expires_at' => $date = now()->addDays(1),
+            'expires_at' => $date = now()->addDays(1)->toDateTimeString(),
         ]);
 
         $this->assertEquals($date, Paste::first()->expires_at->toDateTimeString());
@@ -139,71 +140,95 @@ class PasteCreateTest extends TestCase
     /** @test */
     function a_paste_must_have_a_name()
     {
-        $response = $this->post('/api/pastes', [
+        $response = $this->json('POST', '/api/pastes', [
             'body' => 'this is the body of the paste',
             'visibility' => 'public',
         ]);
 
-        $response->assertSessionHasErrors('name');
+        $response->assertJsonStructure([
+            'errors' => [
+                'name',
+            ],
+        ]);
     }
 
     /** @test */
     function a_paste_must_have_a_body()
     {
-        $response = $this->post('/api/pastes', [
+        $response = $this->json('POST', '/api/pastes', [
             'name' => 'this is an example paste',
             'visibility' => 'public',
         ]);
 
-        $response->assertSessionHasErrors('body');
+        $response->assertJsonStructure([
+            'errors' => [
+                'body',
+            ],
+        ]);
     }
 
     /** @test */
     function a_paste_must_have_a_visibility()
     {
-        $response = $this->post('/api/pastes', [
+        $response = $this->json('POST', '/api/pastes', [
             'name' => 'this is an example paste',
             'body' => 'this is the body of the paste',
         ]);
 
-        $response->assertSessionHasErrors('visibility');
+        $response->assertJsonStructure([
+            'errors' => [
+                'visibility',
+            ],
+        ]);
     }
 
     /** @test */
     function a_paste_language_must_be_valid()
     {
-        $response = $this->post('/api/pastes', [
+        $response = $this->json('POST', '/api/pastes', [
             'name' => 'this is an example paste',
             'body' => 'this is the body of the paste',
             'visibility' => 'public',
             'language' => 'invalid',
         ]);
 
-        $response->assertSessionHasErrors('language');
+        $response->assertJsonStructure([
+            'errors' => [
+                'language',
+            ],
+        ]);
     }
 
     /** @test */
     function a_paste_expiration_date_must_be_in_the_future()
     {
-        $response = $this->post('/api/pastes', [
+        $response = $this->json('POST', '/api/pastes', [
             'name' => 'this is an example paste',
             'body' => 'this is the body of the paste',
             'visibility' => 'public',
             'expires_at' => now()->subDays(1),
         ]);
 
-        $response->assertSessionHasErrors('expires_at');
+        $response->assertJsonStructure([
+            'errors' => [
+                'expires_at',
+            ],
+        ]);
     }
 
     /** @test */
     function a_paste_visibility_must_be_valid()
     {
-        $response = $this->post('/api/pastes', [
+        $response = $this->json('POST', '/api/pastes', [
             'name' => 'this is an example paste',
             'body' => 'this is the body of the paste',
             'visibility' => 'invalid',
         ]);
 
-        $response->assertSessionHasErrors('visibility');
+        $response->assertJsonStructure([
+            'errors' => [
+                'visibility',
+            ],
+        ]);
     }
 }
