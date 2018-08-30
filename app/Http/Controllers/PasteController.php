@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Paste;
+use App\Errors\NoAccess;
+use App\Errors\PasteExpired;
 use Illuminate\Http\Request;
 use App\Errors\MustBeAuthenticated;
 use App\Http\Resources\ErrorResource;
@@ -17,7 +19,7 @@ class PasteController extends Controller
      */
     public function index()
     {
-        $pastes = Paste::paginate(10);
+        $pastes = Paste::public()->paginate(10);
 
         return PasteResource::collection($pastes);
     }
@@ -32,7 +34,7 @@ class PasteController extends Controller
     {
         $request->validate([
             'name' => 'required',
-            'body' => 'required',
+            'body' => 'required|max:256000',
             'visibility' => 'required|in:public,private,unlisted',
             'language' => 'nullable|in:' . implode(',', config('pastebin.languages')),
             'expires_at' => 'nullable|date|after:now',
@@ -62,11 +64,11 @@ class PasteController extends Controller
     {
         if ($paste->isPrivate()
             && !$paste->isOwnedBy(request()->user())) {
-            abort(404);
+            return new ErrorResource(new NoAccess);
         }
 
         if (optional($paste->expires_at)->lte(now())) {
-            abort(404);
+            return new ErrorResource(new PasteExpired);
         }
 
         return new PasteResource($paste);

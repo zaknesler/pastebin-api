@@ -20,4 +20,16 @@ class PasteIndexTest extends TestCase
 
         $response->assertJsonCount(3, 'data');
     }
+
+    /** @test */
+    function only_public_pastes_are_indexed()
+    {
+        factory(Paste::class)->states('public')->create();
+        factory(Paste::class)->states('unlisted')->create();
+        factory(Paste::class)->states('private')->create();
+
+        $response = $this->json('GET', '/api/pastes');
+
+        $response->assertJsonCount(1, 'data');
+    }
 }

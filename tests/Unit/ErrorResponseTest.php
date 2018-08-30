@@ -3,6 +3,8 @@
 namespace Tests\Unit;
 
 use Tests\TestCase;
+use App\Errors\NoAccess;
+use App\Errors\PasteExpired;
 use App\Errors\ErrorResponse;
 use App\Errors\MustBeAuthenticated;
 use App\Http\Resources\ErrorResource;
@@ -44,5 +46,23 @@ class ErrorResponseTest extends TestCase
 
         $this->assertEquals('You must be authenticated to create a private paste.', $resource['message']);
         $this->assertEquals(401, $resource['status']);
+    }
+
+    /** @test */
+    function no_access_error()
+    {
+        $resource = (new ErrorResource(new NoAccess))->resolve();
+
+        $this->assertEquals('You do not have access to this paste.', $resource['message']);
+        $this->assertEquals(403, $resource['status']);
+    }
+
+    /** @test */
+    function paste_expired_error()
+    {
+        $resource = (new ErrorResource(new PasteExpired))->resolve();
+
+        $this->assertEquals('This paste has expired.', $resource['message']);
+        $this->assertEquals(410, $resource['status']);
     }
 }

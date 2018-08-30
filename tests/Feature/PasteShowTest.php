@@ -67,7 +67,11 @@ class PasteShowTest extends TestCase
 
         $response = $this->json('GET', "/api/pastes/$paste->slug");
 
-        $response->assertStatus(404);
+        $response->assertStatus(410);
+        $response->assertJsonFragment([
+            'message' => 'This paste has expired.',
+            'status' => 410,
+        ]);
     }
 
     /** @test */
@@ -78,7 +82,11 @@ class PasteShowTest extends TestCase
 
         $response = $this->json('GET', "/api/pastes/$paste->slug");
 
-        $response->assertStatus(404);
+        $response->assertStatus(403);
+        $response->assertJsonFragment([
+            'message' => 'You do not have access to this paste.',
+            'status' => 403,
+        ]);
     }
 
     /** @test */
