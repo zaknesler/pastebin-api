@@ -76,6 +76,16 @@ class Paste extends Model
     }
 
     /**
+     * Determine if a paste has expired.
+     *
+     * @return boolean
+     */
+    public function hasExpired()
+    {
+        return optional($this->expires_at)->lte(now());
+    }
+
+    /**
      * Determine if a paste is owned by a user.
      *
      * @param  \App\User|null  $user

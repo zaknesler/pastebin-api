@@ -121,22 +121,6 @@ class PasteCreateTest extends TestCase
     }
 
     /** @test */
-    function must_be_authenticated_to_create_a_private_paste()
-    {
-        $response = $this->json('POST', '/api/pastes', [
-            'name' => 'this is an example paste',
-            'body' => 'this is the body of the paste',
-            'visibility' => 'private',
-        ]);
-
-        $response->assertStatus(401);
-        $response->assertJsonFragment([
-            'message' => 'You must be authenticated to create a private paste.',
-            'status' => 401,
-        ]);
-    }
-
-    /** @test */
     function a_paste_can_have_an_expiration_date()
     {
         $response = $this->json('POST', '/api/pastes', [
@@ -147,6 +131,31 @@ class PasteCreateTest extends TestCase
         ]);
 
         $this->assertEquals($date, Paste::first()->expires_at->toDateTimeString());
+    }
+
+    /** @test */
+    function must_be_authenticated_to_create_a_private_paste()
+    {
+        $response = $this->json('POST', '/api/pastes', [
+            'name' => 'this is an example paste',
+            'body' => 'this is the body of the paste',
+            'visibility' => 'private',
+        ]);
+
+        $this->assertEquals(0, Paste::count());
+        $response->assertStatus(401);
+        $response->assertJsonFragment([
+            'message' => 'You must be authenticated to create a private paste.',
+            'status' => 401,
+        ]);
+    }
+
+    /** @test */
+    function paste_is_not_created_when_validation_fails()
+    {
+        $response = $this->json('POST', '/api/pastes');
+
+        $this->assertEquals(0, Paste::count());
     }
 
     /** @test */

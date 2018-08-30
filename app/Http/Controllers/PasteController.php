@@ -40,11 +40,11 @@ class PasteController extends Controller
             'expires_at' => 'nullable|date|after:now',
         ]);
 
-        $paste = Paste::create($request->all());
-
         if ($request->visibility == 'private' && !auth()->check()) {
             return new ErrorResource(new MustBeAuthenticated);
         }
+
+        $paste = Paste::create($request->all());
 
         if ($user = $request->user()) {
             $paste->user()->associate($user);
@@ -67,7 +67,7 @@ class PasteController extends Controller
             return new ErrorResource(new NoAccess);
         }
 
-        if (optional($paste->expires_at)->lte(now())) {
+        if ($paste->hasExpired()) {
             return new ErrorResource(new PasteExpired);
         }
 
