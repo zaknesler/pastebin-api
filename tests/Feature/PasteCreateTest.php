@@ -109,6 +109,18 @@ class PasteCreateTest extends TestCase
     }
 
     /** @test */
+    function a_pastes_body_can_be_large()
+    {
+        $response = $this->json('POST', '/api/pastes', [
+            'name' => 'this is an example paste',
+            'body' => file_get_contents(base_path('tests/stubs/under-limit.txt')),
+            'visibility' => 'public',
+        ]);
+
+        $response->assertSuccessful();
+    }
+
+    /** @test */
     function must_be_authenticated_to_create_a_private_paste()
     {
         $response = $this->json('POST', '/api/pastes', [
@@ -178,6 +190,22 @@ class PasteCreateTest extends TestCase
         $response->assertJsonStructure([
             'errors' => [
                 'visibility',
+            ],
+        ]);
+    }
+
+    /** @test */
+    function a_pastes_body_must_not_exceed_max_length()
+    {
+        $response = $this->json('POST', '/api/pastes', [
+            'name' => 'this is an example paste',
+            'body' => file_get_contents(base_path('tests/stubs/over-limit.txt')),
+            'visibility' => 'public',
+        ]);
+
+        $response->assertJsonStructure([
+            'errors' => [
+                'body',
             ],
         ]);
     }
