@@ -94,11 +94,11 @@ class Paste extends Model
 
     public function isOwnedBy(User $user = null)
     {
-        if (is_null($user)) {
+        if (is_null($user) || is_null($this->user)) {
             return false;
         }
 
-        return (bool) optional($this->user_id) == $user->id;
+        return $this->user_id == $user->id;
     }
 
     /**
