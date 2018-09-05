@@ -11,7 +11,7 @@ class MustBeAuthenticated extends ErrorResponse
      */
     public function getMessage()
     {
-        return 'You must be authenticated to create a private paste.';
+        return 'You must be authenticated to perform this action.';
     }
 
     /**
