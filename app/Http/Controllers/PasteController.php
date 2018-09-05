@@ -33,7 +33,7 @@ class PasteController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required',
+            'name' => 'required|min:8',
             'body' => 'required|max:256000',
             'visibility' => 'required|in:public,private,unlisted',
             'language' => 'nullable|in:' . implode(',', config('pastebin.languages')),
