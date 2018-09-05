@@ -63,7 +63,7 @@ class PasteController extends Controller
     public function show(Paste $paste, Request $request)
     {
         if ($paste->isPrivate()
-            && !$paste->isOwnedBy(request()->user())) {
+            && !$paste->isOwnedBy($request->user())) {
             return new ErrorResource(new NoAccess);
         }
 
