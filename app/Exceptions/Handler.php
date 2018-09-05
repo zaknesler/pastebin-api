@@ -3,6 +3,12 @@
 namespace App\Exceptions;
 
 use Exception;
+use App\Errors\ErrorResponse;
+use App\Errors\MustBeAuthenticated;
+use App\Http\Resources\ErrorResource;
+use Illuminate\Auth\AuthenticationException;
+use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
 class Handler extends ExceptionHandler
@@ -46,6 +52,48 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        if ($request->expectsJson() || $request->wantsJson() || $request->ajax()) {
+            if ($exception instanceof AuthenticationException) {
+                return new ErrorResource(new MustBeAuthenticated);
+            }
+
+            return new ErrorResource(new ErrorResponse(
+                $exception->getMessage(),
+                $this->getStatusCodeFromException($exception),
+                $this->getErrorsFromException($exception)
+            ));
+        }
+
         return parent::render($request, $exception);
+    }
+
+    /**
+     * Get the status code of an exception if it has one.
+     *
+     * @param  \Exception $exception
+     * @return int
+     */
+    protected function getStatusCodeFromException(Exception $exception)
+    {
+        if (method_exists($exception, 'getStatusCode')) {
+            return $exception->getStatusCode();
+        }
+
+        return Response::HTTP_BAD_REQUEST;
+    }
+
+    /**
+     * Fetch the validation errors from an exception if they exist.
+     *
+     * @param  \Exception $exception
+     * @return array|null
+     */
+    protected function getErrorsFromException(Exception $exception)
+    {
+        if ($exception instanceof ValidationException) {
+            return $exception->errors();
+        }
+
+        return null;
     }
 }

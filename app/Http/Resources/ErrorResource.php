@@ -29,6 +29,7 @@ class ErrorResource extends JsonResource
         return [
             'error' => true,
             'message' => $this->getMessage(),
+            'errors' => $this->getErrors(),
             'status' => $this->getStatusCode(),
         ];
     }

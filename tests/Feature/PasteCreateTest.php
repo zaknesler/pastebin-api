@@ -167,8 +167,10 @@ class PasteCreateTest extends TestCase
         ]);
 
         $response->assertJsonStructure([
-            'errors' => [
-                'name',
+            'data' => [
+                'errors' => [
+                    'name',
+                ],
             ],
         ]);
     }
@@ -182,8 +184,10 @@ class PasteCreateTest extends TestCase
         ]);
 
         $response->assertJsonStructure([
-            'errors' => [
-                'body',
+            'data' => [
+                'errors' => [
+                    'body',
+                ],
             ],
         ]);
     }
@@ -197,8 +201,10 @@ class PasteCreateTest extends TestCase
         ]);
 
         $response->assertJsonStructure([
-            'errors' => [
-                'visibility',
+            'data' => [
+                'errors' => [
+                    'visibility',
+                ],
             ],
         ]);
     }
@@ -213,8 +219,10 @@ class PasteCreateTest extends TestCase
         ]);
 
         $response->assertJsonStructure([
-            'errors' => [
-                'body',
+            'data' => [
+                'errors' => [
+                    'body',
+                ],
             ],
         ]);
     }
@@ -230,8 +238,10 @@ class PasteCreateTest extends TestCase
         ]);
 
         $response->assertJsonStructure([
-            'errors' => [
-                'language',
+            'data' => [
+                'errors' => [
+                    'language',
+                ],
             ],
         ]);
     }
@@ -247,8 +257,10 @@ class PasteCreateTest extends TestCase
         ]);
 
         $response->assertJsonStructure([
-            'errors' => [
-                'expires_at',
+            'data' => [
+                'errors' => [
+                    'expires_at',
+                ],
             ],
         ]);
     }
@@ -263,8 +275,10 @@ class PasteCreateTest extends TestCase
         ]);
 
         $response->assertJsonStructure([
-            'errors' => [
-                'visibility',
+            'data' => [
+                'errors' => [
+                    'visibility',
+                ],
             ],
         ]);
     }

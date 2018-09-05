@@ -14,15 +14,57 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 class ErrorResponseTest extends TestCase
 {
     /** @test */
-    function an_error_response_can_set_a_status_code_and_a_message()
+    function an_error_response_can_be_returned()
     {
         $error = new ErrorResponse(
-            'Test error message.',
-            404
+            'Something went wrong.',
+            404,
+            ['foo', 'bar']
+        );
+
+        $resource = (new ErrorResource($error))->resolve();
+
+        $this->assertEquals('Something went wrong.', $resource['message']);
+        $this->assertEquals(404, $resource['status']);
+        $this->assertEquals(['foo', 'bar'], $resource['errors']);
+    }
+    /** @test */
+    function an_error_response_can_set_a_message()
+    {
+        $error = new ErrorResponse(
+            'Test error message.'
         );
 
         $this->assertEquals('Test error message.', $error->getMessage());
+    }
+
+    /** @test */
+    function an_error_response_can_set_a_status_code()
+    {
+        $error = new ErrorResponse(
+            null,
+            404
+        );
+
         $this->assertEquals(404, $error->getStatusCode());
+    }
+
+    /** @test */
+    function an_error_response_can_set_an_array_of_errors()
+    {
+        $errors = [
+            'example' => [
+                0 => 'Example error message',
+            ],
+        ];
+
+         $error = new ErrorResponse(
+            null,
+            null,
+            $errors
+        );
+
+        $this->assertEquals($errors, $error->getErrors());
     }
 
     /** @test */
@@ -44,7 +86,7 @@ class ErrorResponseTest extends TestCase
     {
         $resource = (new ErrorResource(new MustBeAuthenticated))->resolve();
 
-        $this->assertEquals('You must be authenticated to create a private paste.', $resource['message']);
+        $this->assertEquals('You must be authenticated to perform this action.', $resource['message']);
         $this->assertEquals(401, $resource['status']);
     }
 

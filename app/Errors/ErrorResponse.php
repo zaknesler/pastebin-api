@@ -19,15 +19,23 @@ class ErrorResponse
     protected $statusCode;
 
     /**
+     * A list of errors.
+     *
+     * @var array
+     */
+    private $errors;
+
+    /**
      * Instantiate a new error instance.
      *
      * @param string|null $message
      * @param int|null $statusCode
      */
-    public function __construct($message = null, $statusCode = null)
+    public function __construct($message = null, $statusCode = null, $errors = null)
     {
         $this->message = $message;
         $this->statusCode = $statusCode;
+        $this->errors = $errors;
     }
 
     /**
@@ -48,5 +56,15 @@ class ErrorResponse
     public function getStatusCode()
     {
         return $this->statusCode;
+    }
+
+    /**
+     * Get the list of errors.
+     *
+     * @return array
+     */
+    public function getErrors()
+    {
+        return $this->errors;
     }
 }
