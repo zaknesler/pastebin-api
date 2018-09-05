@@ -78,7 +78,7 @@ class PasteShowTest extends TestCase
     function viewing_a_private_paste_fails()
     {
         $paste = factory(Paste::class)->states('private')->create();
-        $paste->user()->associate(factory(User::class)->create());
+        $paste->user()->associate(factory(User::class)->create())->save();
 
         $response = $this->json('GET', "/api/pastes/$paste->slug");
 
@@ -95,7 +95,7 @@ class PasteShowTest extends TestCase
         $this->actingAs($user = factory(User::class)->create());
 
         $paste = factory(Paste::class)->states('private')->create();
-        $paste->user()->associate($user);
+        $paste->user()->associate($user)->save();
 
         $response = $this->json('GET', "/api/pastes/$paste->slug");
 
