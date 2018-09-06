@@ -4,11 +4,11 @@ namespace App\Exceptions;
 
 use Exception;
 use App\Errors\ErrorResponse;
+use Illuminate\Http\Response;
 use App\Errors\MustBeAuthenticated;
 use App\Http\Resources\ErrorResource;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Validation\ValidationException;
-use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
 class Handler extends ExceptionHandler
@@ -79,7 +79,7 @@ class Handler extends ExceptionHandler
             return $exception->getStatusCode();
         }
 
-        return Response::HTTP_BAD_REQUEST;
+        return $exception->status ?? Response::HTTP_BAD_REQUEST;
     }
 
     /**
