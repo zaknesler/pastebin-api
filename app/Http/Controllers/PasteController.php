@@ -3,12 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Paste;
-use App\Errors\NoAccess;
-use App\Errors\PasteExpired;
 use Illuminate\Http\Request;
-use App\Errors\MustBeAuthenticated;
-use App\Http\Resources\ErrorResource;
+use App\Http\Resources\ApiResource;
 use App\Http\Resources\PasteResource;
+use App\Http\Responses\Errors\NoAccess;
+use App\Http\Responses\Errors\PasteExpired;
+use App\Http\Responses\Errors\MustBeAuthenticated;
 
 class PasteController extends Controller
 {
@@ -52,7 +52,7 @@ class PasteController extends Controller
         ]);
 
         if ($request->visibility == 'private' && !auth()->check()) {
-            return new ErrorResource(new MustBeAuthenticated);
+            return new ApiResource(new MustBeAuthenticated);
         }
 
         $paste = Paste::create($request->all());
@@ -75,11 +75,11 @@ class PasteController extends Controller
     {
         if ($paste->isPrivate()
             && !$paste->isOwnedBy($request->user())) {
-            return new ErrorResource(new NoAccess);
+            return new ApiResource(new NoAccess);
         }
 
         if ($paste->hasExpired()) {
-            return new ErrorResource(new PasteExpired);
+            return new ApiResource(new PasteExpired);
         }
 
         return new PasteResource($paste);
@@ -95,7 +95,7 @@ class PasteController extends Controller
     public function update(Request $request, Paste $paste)
     {
         if (!$paste->isOwnedBy($request->user())) {
-            return new ErrorResource(new NoAccess);
+            return new ApiResource(new NoAccess);
         }
 
         $validatedData = $request->validate([
@@ -109,5 +109,25 @@ class PasteController extends Controller
         $paste->update($validatedData);
 
         return new PasteResource($paste);
+    }
+
+    /**
+     * Delete a specified paste.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  Paste  $paste
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(Request $request, Paste $paste)
+    {
+        if (!$paste->isOwnedBy($request->user())) {
+            return new ApiResource(new NoAccess);
+        }
+
+        $paste->delete();
+
+        return new PasteResource($paste);
+
+        // abort(204, 'Paste has been deleted.');
     }
 }
