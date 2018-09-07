@@ -55,14 +55,14 @@ class Handler extends ExceptionHandler
     {
         if ($request->expectsJson() || $request->wantsJson() || $request->ajax()) {
             if ($exception instanceof AuthenticationException) {
-                return new ApiResource(new MustBeAuthenticated);
+                return apiResponse(new MustBeAuthenticated);
             }
 
             if ($exception instanceof ModelNotFoundException) {
-                return new ApiResource(new CustomResponse('No results found.', 404, true));
+                return apiResponse('No results found.', 404, true);
             }
 
-            return new ApiResource(new ExceptionResponse($exception));
+            return apiResponse(new ExceptionResponse($exception));
         }
 
         return parent::render($request, $exception);

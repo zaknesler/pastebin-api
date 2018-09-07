@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Paste;
 use Illuminate\Http\Request;
-use App\Http\Resources\ApiResource;
 use App\Http\Resources\PasteResource;
 use App\Http\Responses\CustomResponse;
 use App\Http\Responses\Errors\NoAccess;
@@ -53,7 +52,7 @@ class PasteController extends Controller
         ]);
 
         if ($request->visibility == 'private' && !auth()->check()) {
-            return new ApiResource(new MustBeAuthenticated);
+            return apiResponse(new MustBeAuthenticated);
         }
 
         $paste = Paste::create($request->all());
@@ -74,13 +73,12 @@ class PasteController extends Controller
      */
     public function show(Paste $paste, Request $request)
     {
-        if ($paste->isPrivate()
-            && !$paste->isOwnedBy($request->user())) {
-            return new ApiResource(new NoAccess);
+        if ($paste->isPrivate() && !$paste->isOwnedBy($request->user())) {
+            return apiResponse(new NoAccess);
         }
 
         if ($paste->hasExpired()) {
-            return new ApiResource(new PasteExpired);
+            return apiResponse(new PasteExpired);
         }
 
         return new PasteResource($paste);
@@ -96,7 +94,7 @@ class PasteController extends Controller
     public function update(Request $request, Paste $paste)
     {
         if (!$paste->isOwnedBy($request->user())) {
-            return new ApiResource(new NoAccess);
+            return apiResponse(new NoAccess);
         }
 
         $validatedData = $request->validate([
@@ -122,11 +120,11 @@ class PasteController extends Controller
     public function destroy(Request $request, Paste $paste)
     {
         if (!$paste->isOwnedBy($request->user())) {
-            return new ApiResource(new NoAccess);
+            return apiResponse(new NoAccess);
         }
 
         $paste->delete();
 
-        return new ApiResource(new CustomResponse('Paste has been deleted.', 202));
+        return apiResponse('Paste has been deleted.', 202);
     }
 }
