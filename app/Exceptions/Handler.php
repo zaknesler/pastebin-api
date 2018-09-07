@@ -3,12 +3,13 @@
 namespace App\Exceptions;
 
 use Exception;
-use App\Errors\ErrorResponse;
 use Illuminate\Http\Response;
-use App\Errors\MustBeAuthenticated;
-use App\Http\Resources\ErrorResource;
+use App\Http\Resources\ApiResource;
+use App\Http\Responses\CustomResponse;
+use App\Http\Responses\ExceptionResponse;
 use Illuminate\Auth\AuthenticationException;
-use Illuminate\Validation\ValidationException;
+use App\Http\Responses\Errors\MustBeAuthenticated;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
 class Handler extends ExceptionHandler
@@ -54,46 +55,16 @@ class Handler extends ExceptionHandler
     {
         if ($request->expectsJson() || $request->wantsJson() || $request->ajax()) {
             if ($exception instanceof AuthenticationException) {
-                return new ErrorResource(new MustBeAuthenticated);
+                return new ApiResource(new MustBeAuthenticated);
             }
 
-            return new ErrorResource(new ErrorResponse(
-                $exception->getMessage(),
-                $this->getStatusCodeFromException($exception),
-                $this->getErrorsFromException($exception)
-            ));
+            if ($exception instanceof ModelNotFoundException) {
+                return new ApiResource(new CustomResponse('No results found.', 404, true));
+            }
+
+            return new ApiResource(new ExceptionResponse($exception));
         }
 
         return parent::render($request, $exception);
-    }
-
-    /**
-     * Get the status code of an exception if it has one.
-     *
-     * @param  \Exception $exception
-     * @return int
-     */
-    protected function getStatusCodeFromException(Exception $exception)
-    {
-        if (method_exists($exception, 'getStatusCode')) {
-            return $exception->getStatusCode();
-        }
-
-        return $exception->status ?? Response::HTTP_BAD_REQUEST;
-    }
-
-    /**
-     * Fetch the validation errors from an exception if they exist.
-     *
-     * @param  \Exception $exception
-     * @return array|null
-     */
-    protected function getErrorsFromException(Exception $exception)
-    {
-        if ($exception instanceof ValidationException) {
-            return $exception->errors();
-        }
-
-        return null;
     }
 }

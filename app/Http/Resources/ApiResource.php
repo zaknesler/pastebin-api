@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ErrorResource extends JsonResource
+class ApiResource extends JsonResource
 {
     /**
      * Customize the response for a request.
@@ -27,10 +27,10 @@ class ErrorResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'error' => true,
             'message' => $this->getMessage(),
-            'errors' => $this->getErrors(),
             'status' => $this->getStatusCode(),
+            'error' => $this->getErroneous(),
+            'errors' => $this->getErrors(),
         ];
     }
 }

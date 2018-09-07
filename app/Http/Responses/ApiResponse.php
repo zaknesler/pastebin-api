@@ -1,45 +1,39 @@
 <?php
 
-namespace App\Errors;
+namespace App\Http\Responses;
 
-class ErrorResponse
+abstract class ApiResponse
 {
     /**
-     * The message of the error.
+     * The message that should be displayed.
      *
      * @var string
      */
     protected $message;
 
     /**
-     * The HTTP status code of the error.
+     * The HTTP status code the response should apply.
      *
      * @var int
      */
     protected $statusCode;
 
     /**
-     * A list of errors.
+     * Mark an API response as erroneous.
+     *
+     * @var bool
+     */
+    protected $isErroneous;
+
+    /**
+     * A list of errors that should be included.
      *
      * @var array
      */
-    private $errors;
+    protected $errors;
 
     /**
-     * Instantiate a new error instance.
-     *
-     * @param string|null $message
-     * @param int|null $statusCode
-     */
-    public function __construct($message = null, $statusCode = null, $errors = null)
-    {
-        $this->message = $message;
-        $this->statusCode = $statusCode;
-        $this->errors = $errors;
-    }
-
-    /**
-     * Get the message of the error.
+     * Get the response message.
      *
      * @return string
      */
@@ -49,13 +43,23 @@ class ErrorResponse
     }
 
     /**
-     * Get the HTTP status code of the error.
+     * Get the HTTP status code.
      *
      * @return int
      */
     public function getStatusCode()
     {
         return $this->statusCode;
+    }
+
+    /**
+     * Get the erroneous state of the response.
+     *
+     * @return bool
+     */
+    public function getErroneous()
+    {
+        return $this->isErroneous;
     }
 
     /**
