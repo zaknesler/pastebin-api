@@ -6,6 +6,7 @@ use App\Paste;
 use Illuminate\Http\Request;
 use App\Http\Resources\ApiResource;
 use App\Http\Resources\PasteResource;
+use App\Http\Responses\CustomResponse;
 use App\Http\Responses\Errors\NoAccess;
 use App\Http\Responses\Errors\PasteExpired;
 use App\Http\Responses\Errors\MustBeAuthenticated;
@@ -20,7 +21,7 @@ class PasteController extends Controller
     function __construct()
     {
         $this->middleware('auth')
-            ->only('update');
+            ->only(['update', 'destroy']);
     }
 
     /**
@@ -126,8 +127,6 @@ class PasteController extends Controller
 
         $paste->delete();
 
-        return new PasteResource($paste);
-
-        // abort(204, 'Paste has been deleted.');
+        return new ApiResource(new CustomResponse('Paste has been deleted.', 202));
     }
 }
