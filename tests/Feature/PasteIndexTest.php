@@ -14,7 +14,7 @@ class PasteIndexTest extends TestCase
     /** @test */
     function pastes_can_be_indexed()
     {
-        factory(Paste::class, 3)->states('public')->create();
+        factory(Paste::class, 3)->create();
 
         $response = $this->json('GET', '/api/pastes');
 
@@ -31,5 +31,19 @@ class PasteIndexTest extends TestCase
         $response = $this->json('GET', '/api/pastes');
 
         $response->assertJsonCount(1, 'data');
+    }
+
+    /** @test */
+    function pastes_are_paginated()
+    {
+        factory(Paste::class)->create();
+
+        $response = $this->json('GET', '/api/pastes');
+
+        $response->assertJsonStructure([
+            'data',
+            'links',
+            'meta',
+        ]);
     }
 }
