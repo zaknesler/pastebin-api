@@ -33,6 +33,17 @@ class User extends Authenticatable
     ];
 
     /**
+     * Get the URL of the user's avatar.
+     *
+     * @param  integer  $size
+     * @return string
+     */
+    public function getAvatar($size = 50)
+    {
+        return 'https://www.gravatar.com/avatar/' . md5($this->email) . '?s=' . $size . '&d=mp';
+    }
+
+    /**
      * A user can have many pastes.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany

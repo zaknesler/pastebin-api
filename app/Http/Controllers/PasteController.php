@@ -30,7 +30,7 @@ class PasteController extends Controller
      */
     public function index()
     {
-        $pastes = Paste::public()->paginate(10);
+        $pastes = Paste::latest()->public()->paginate(10);
 
         return PasteResource::collection($pastes);
     }
@@ -47,7 +47,7 @@ class PasteController extends Controller
             'name' => 'required|min:8',
             'body' => 'required|max:256000',
             'visibility' => 'required|in:public,private,unlisted',
-            'language' => 'nullable|in:' . implode(',', config('pastebin.languages')),
+            'language' => 'nullable|in:' . implode(',', array_keys(config('pastebin.languages'))),
             'expires_at' => 'nullable|date|after:now',
         ]);
 
@@ -101,7 +101,7 @@ class PasteController extends Controller
             'name' => 'sometimes|required|min:8',
             'body' => 'sometimes|required|max:256000',
             'visibility' => 'sometimes|required|in:public,private,unlisted',
-            'language' => 'sometimes|nullable|in:' . implode(',', config('pastebin.languages')),
+            'language' => 'sometimes|nullable|in:' . implode(',', array_keys(config('pastebin.languages'))),
             'expires_at' => 'sometimes|nullable|date|after:now',
         ]);
 
