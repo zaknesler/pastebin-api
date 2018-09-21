@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Responses;
+namespace Tests\Unit\Resources\Responses;
 
 use Exception;
 use Tests\TestCase;
