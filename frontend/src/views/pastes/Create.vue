@@ -77,19 +77,16 @@
   import axios from 'axios'
 
   export default {
-    data() {
-      return {
-        form: {
-          name: '',
-          visibility: 'public',
-          language: '',
-          expires_at: '',
-          body: '',
-        },
-
-        languages: []
-      }
-    },
+    data: () => ({
+      form: {
+        name: '',
+        visibility: 'public',
+        language: '',
+        expires_at: '',
+        body: '',
+      },
+      languages: []
+    }),
 
     mounted() {
       axios.get('/api/supported-languages')
