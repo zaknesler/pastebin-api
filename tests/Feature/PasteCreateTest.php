@@ -22,24 +22,8 @@ class PasteCreateTest extends TestCase
             'visibility' => 'public',
         ]);
 
-        $response->assertJsonFragment([
-            'user' => null,
-        ]);
-    }
-
-    /** @test */
-    function a_paste_can_have_a_language()
-    {
-        $response = $this->json('POST', '/api/pastes', [
-            'name' => 'this is an example paste',
-            'body' => 'this is the body of the paste',
-            'visibility' => 'public',
-            'language' => 'html',
-        ]);
-
-        $response->assertJsonFragment([
-            'language' => 'html',
-        ]);
+        $this->assertEquals(1, Paste::count());
+        $this->assertEquals(0, Paste::first()->user()->count());
     }
 
     /** @test */
@@ -52,85 +36,6 @@ class PasteCreateTest extends TestCase
         ]);
 
         $response->assertSuccessful();
-    }
-
-    /** @test */
-    function a_paste_can_be_created_by_a_user()
-    {
-        $this->actingAs(factory(User::class)->create([
-            'name' => 'Example',
-            'email' => 'example@example.com'
-        ]));
-
-        $response = $this->json('POST', '/api/pastes', [
-            'name' => 'this is an example paste',
-            'body' => 'this is the body of the paste',
-            'visibility' => 'public',
-        ]);
-
-        $response->assertJsonFragment([
-            'user' => [
-                'name' => 'Example',
-                'email' => 'example@example.com',
-            ],
-        ]);
-    }
-
-    /** @test */
-    function a_paste_can_be_unlisted()
-    {
-        $this->actingAs(factory(User::class)->create());
-
-        $response = $this->json('POST', '/api/pastes', [
-            'name' => 'this is an example paste',
-            'body' => 'this is the body of the paste',
-            'visibility' => 'unlisted',
-        ]);
-
-        $response->assertJsonFragment([
-            'visibility' => 'unlisted',
-        ]);
-    }
-
-    /** @test */
-    function a_paste_can_be_private()
-    {
-        $this->actingAs(factory(User::class)->create());
-
-        $response = $this->json('POST', '/api/pastes', [
-            'name' => 'this is an example paste',
-            'body' => 'this is the body of the paste',
-            'visibility' => 'private',
-        ]);
-
-        $response->assertJsonFragment([
-            'visibility' => 'private',
-        ]);
-    }
-
-    /** @test */
-    function a_pastes_body_can_be_large()
-    {
-        $response = $this->json('POST', '/api/pastes', [
-            'name' => 'this is an example paste',
-            'body' => file_get_contents(base_path('tests/stubs/under-limit.txt')),
-            'visibility' => 'public',
-        ]);
-
-        $response->assertSuccessful();
-    }
-
-    /** @test */
-    function a_paste_can_have_an_expiration_date()
-    {
-        $response = $this->json('POST', '/api/pastes', [
-            'name' => 'this is an example paste',
-            'body' => 'this is the body of the paste',
-            'visibility' => 'public',
-            'expires_at' => $date = now()->addDays(1)->toDateTimeString(),
-        ]);
-
-        $this->assertEquals($date, Paste::first()->expires_at->toDateTimeString());
     }
 
     /** @test */
@@ -156,6 +61,90 @@ class PasteCreateTest extends TestCase
         $response = $this->json('POST', '/api/pastes');
 
         $this->assertEquals(0, Paste::count());
+    }
+
+    /** @test */
+    function a_paste_can_be_created_by_a_user()
+    {
+        $user = $this->authenticate(null, [
+            'name' => 'Example',
+            'email' => 'example@example.com'
+        ]);
+
+        $response = $this->json('POST', '/api/pastes', [
+            'name' => 'this is an example paste',
+            'body' => 'this is the body of the paste',
+            'visibility' => 'public',
+        ]);
+
+        $this->assertEquals(1, Paste::count());
+        $this->assertTrue(Paste::first()->isOwnedBy(request()->user()));
+    }
+
+        /** @test */
+    function a_paste_can_have_a_language()
+    {
+        $response = $this->json('POST', '/api/pastes', [
+            'name' => 'this is an example paste',
+            'body' => 'this is the body of the paste',
+            'visibility' => 'public',
+            'language' => 'html',
+        ]);
+
+        $this->assertEquals('html', Paste::first()->language);
+    }
+
+    /** @test */
+    function a_paste_can_be_unlisted()
+    {
+        $this->authenticate();
+
+        $response = $this->json('POST', '/api/pastes', [
+            'name' => 'this is an example paste',
+            'body' => 'this is the body of the paste',
+            'visibility' => 'unlisted',
+        ]);
+
+        $this->assertEquals('unlisted', Paste::first()->visibility);
+    }
+
+    /** @test */
+    function a_paste_can_be_private()
+    {
+        $this->authenticate();
+
+        $response = $this->json('POST', '/api/pastes', [
+            'name' => 'this is an example paste',
+            'body' => 'this is the body of the paste',
+            'visibility' => 'private',
+        ]);
+
+        $this->assertEquals('private', Paste::first()->visibility);
+    }
+
+    /** @test */
+    function a_pastes_body_can_be_large()
+    {
+        $response = $this->json('POST', '/api/pastes', [
+            'name' => 'this is an example paste',
+            'body' => file_get_contents(base_path('tests/stubs/under-limit.txt')),
+            'visibility' => 'public',
+        ]);
+
+        $this->assertNotNull('body', Paste::first()->body);
+    }
+
+    /** @test */
+    function a_paste_can_have_an_expiration_date()
+    {
+        $response = $this->json('POST', '/api/pastes', [
+            'name' => 'this is an example paste',
+            'body' => 'this is the body of the paste',
+            'visibility' => 'public',
+            'expires_at' => $date = now()->addDays(1)->toDateTimeString(),
+        ]);
+
+        $this->assertEquals($date, Paste::first()->expires_at->toDateTimeString());
     }
 
     /** @test */
