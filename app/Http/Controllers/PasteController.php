@@ -58,7 +58,7 @@ class PasteController extends Controller
         $paste = Paste::create($request->all());
 
         if ($user = $request->user()) {
-            $paste->user()->associate($user);
+            $paste->user()->associate($user)->save();
         }
 
         return new PasteResource($paste);
