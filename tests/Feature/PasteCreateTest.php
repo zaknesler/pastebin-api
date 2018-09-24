@@ -78,7 +78,7 @@ class PasteCreateTest extends TestCase
         ]);
 
         $this->assertEquals(1, Paste::count());
-        $this->assertTrue(Paste::first()->isOwnedBy(request()->user()));
+        $this->assertTrue(Paste::first()->isOwnedBy($user));
     }
 
         /** @test */
