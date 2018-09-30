@@ -48,11 +48,15 @@ class PasteController extends Controller
             'body' => 'required|max:256000',
             'visibility' => 'required|in:public,private,unlisted',
             'language' => 'nullable|in:' . implode(',', array_keys(config('pastebin.languages'))),
-            'expires_at' => 'nullable|date|after:now',
+            'expires_at' => 'nullable|in:' . implode(',', array_keys(config('pastebin.expiration_dates'))),
         ]);
 
         if ($request->visibility == 'private' && !auth()->check()) {
             return apiResponse(new MustBeAuthenticated);
+        }
+
+        if ($request->expires_at) {
+            $request['expires_at'] = now()->addSeconds(config('pastebin.expiration_dates')[$request->expires_at]);
         }
 
         $paste = Paste::create($request->all());

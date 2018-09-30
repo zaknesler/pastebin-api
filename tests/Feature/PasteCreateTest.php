@@ -141,10 +141,10 @@ class PasteCreateTest extends TestCase
             'name' => 'this is an example paste',
             'body' => 'this is the body of the paste',
             'visibility' => 'public',
-            'expires_at' => $date = now()->addDays(1)->toDateTimeString(),
+            'expires_at' => '1day',
         ]);
 
-        $this->assertEquals($date, Paste::first()->expires_at->toDateTimeString());
+        $this->assertEquals(now()->addDays(1), Paste::first()->expires_at->toDateTimeString());
     }
 
     /** @test */
@@ -236,13 +236,13 @@ class PasteCreateTest extends TestCase
     }
 
     /** @test */
-    function a_paste_expiration_date_must_be_in_the_future()
+    function a_paste_expiration_date_must_be_valid()
     {
         $response = $this->json('POST', '/api/pastes', [
             'name' => 'this is an example paste',
             'body' => 'this is the body of the paste',
             'visibility' => 'public',
-            'expires_at' => now()->subDays(1),
+            'expires_at' => 'invalid',
         ]);
 
         $response->assertJsonStructure([
