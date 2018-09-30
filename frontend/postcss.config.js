@@ -9,21 +9,23 @@ class TailwindExtractor {
 }
 
 module.exports = {
-    plugins: [
+  plugins: [
     tailwindcss('./src/tailwind.js'),
     autoprefixer(),
     process.env.NODE_ENV === 'production'
-        ? purgecss({
-            content: [
-                './src/**/*.html',
-                './src/**/*.vue',
-                './public/index.html',
-            ],
+      ? purgecss({
+          content: [
+            './src/**/*.html',
+            './src/**/*.vue',
+            './public/index.html',
+          ],
 
-            extractors: [{
-                extractor: TailwindExtractor,
-                extensions: ['html', 'vue']
-            }]
+          extractors: [{
+            extractor: TailwindExtractor,
+            extensions: ['html', 'vue']
+          }],
+
+          whitelist: ['hidden']
         }) : null
-    ]
+  ]
 }
