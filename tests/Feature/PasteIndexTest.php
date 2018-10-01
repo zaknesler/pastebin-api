@@ -34,6 +34,19 @@ class PasteIndexTest extends TestCase
     }
 
     /** @test */
+    function expired_pastes_are_not_indexed()
+    {
+        factory(Paste::class)->create();
+        factory(Paste::class)->create([
+            'expires_at' => now()->subDays(1),
+        ]);
+
+        $response = $this->json('GET', '/api/pastes');
+
+        $response->assertJsonCount(1, 'data');
+    }
+
+    /** @test */
     function pastes_are_paginated()
     {
         factory(Paste::class)->create();

@@ -30,7 +30,7 @@ class PasteController extends Controller
      */
     public function index()
     {
-        $pastes = Paste::latest()->public()->paginate(10);
+        $pastes = Paste::notExpired()->public()->latest()->paginate(10);
 
         return PasteResource::collection($pastes);
     }

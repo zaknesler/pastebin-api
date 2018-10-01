@@ -66,12 +66,23 @@ class Paste extends Model
     /**
      * Scope only the publicly visible pastes.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder $query
+     * @param  \Illuminate\Database\Eloquent\Builder $builder
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopePublic(Builder $query)
+    public function scopePublic(Builder $builder)
     {
-        return $query->where('visibility', 'public');
+        return $builder->where('visibility', 'public');
+    }
+
+    /**
+     * Scope only the pastes that haven't expired.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder $builder
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeNotExpired(Builder $builder)
+    {
+        return $builder->where('expires_at', '>', now())->orWhereNull('expires_at');
     }
 
     /**
