@@ -8,7 +8,7 @@
     @keydown.down.exact.prevent="selectNext"
     @click="toggle"
     @blur="hide"
-    class="relative flex items-center justify-between p-4 w-full h-auto select-none appearance-none text-base text-grey-darker border-0 bg-grey-lightest focus:outline-none focus:shadow-outline shadow-transition cursor-pointer rounded">
+    class="relative flex items-center justify-between p-4 w-full h-auto select-none appearance-none text-base text-grey-darker bg-grey-lightest focus:outline-none focus:shadow-outline shadow-transition cursor-pointer rounded">
     <span class="leading-none mr-4" v-text="selected ? selected.name : items[0].name"></span>
 
     <svg class="w-4 h-4 flex-no-shrink text-grey fill-current pointer-events-none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
