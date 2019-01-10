@@ -1,11 +1,19 @@
 <?php
 
+Route::prefix('/auth')->namespace('Auth')->group(function () {
+    Route::post('/register', 'RegisterController@store');
+    Route::post('/login', 'LoginController@store');
+    Route::delete('/logout', 'LogoutController@destroy');
+
+    Route::get('/me', 'MeController@view');
+});
+
 Route::apiResource('/pastes', 'PasteController');
 
-Route::get('supported-languages', function () {
-    return apiResponse([
-        'languages' => Cache::rememberForever('pastebin.languages', function () {
-            return config('pastebin.languages');
-        })
-    ], 200);
-});
+// Route::get('/dropdown', function () {
+//     return response()->json([
+//         'languages' => config('pastebin.languages'),
+//         'expirations' => config('pastebin.expiration_dates'),
+//         'visibilities' => config('pastebin.visibilities'),
+//     ]);
+// });

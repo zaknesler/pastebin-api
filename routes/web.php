@@ -10,9 +10,3 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-Route::view('{route}', 'index')->where('route', '.*');
-
-Auth::routes();
-
-// Route::get('/home', 'HomeController@index')->name('home');

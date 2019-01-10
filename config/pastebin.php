@@ -1,6 +1,9 @@
 <?php
 
 return [
+    /**
+     * Master array of syntax languages.
+     */
     'languages' => [
         'actionscript' => 'ActionScript',
         'apache'       => 'Apache',
@@ -33,6 +36,9 @@ return [
         'yaml'         => 'YAML',
     ],
 
+    /**
+     * The expiration values in seconds.
+     */
     'expiration_dates' => [
         '5min'  => 300,
         '10min' => 600,

@@ -67,7 +67,7 @@ class PasteCreateTest extends TestCase
     function a_paste_can_be_created_by_a_user()
     {
         $user = $this->authenticate(null, [
-            'name' => 'Example',
+            'username' => 'Example',
             'email' => 'example@example.com'
         ]);
 

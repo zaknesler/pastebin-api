@@ -5,8 +5,8 @@ namespace Tests\Unit\Resources;
 use App\User;
 use App\Paste;
 use Tests\TestCase;
-use App\Http\Resources\UserResource;
 use App\Http\Resources\PasteResource;
+use App\Http\Resources\PublicUserResource;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -24,7 +24,7 @@ class PasteResourceTest extends TestCase
 
         $pasteResource = (new PasteResource($paste))->resolve();
 
-        $this->assertTrue($pasteResource['user'] instanceof UserResource);
+        $this->assertTrue($pasteResource['user'] instanceof PublicUserResource);
         $this->assertArraySubset([
             'name' => 'Example Paste',
             'slug' => 'example-paste',

@@ -26,11 +26,14 @@ class PasteController extends Controller
     /**
      * Display a listing of all pastes.
      *
-     * @return \Illuminate\Http\Resources\Json\JsonResource
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index()
     {
-        $pastes = Paste::notExpired()->public()->latest()->paginate(10);
+        $pastes = Paste::notExpired()
+            ->public()
+            ->latest()
+            ->get();
 
         return PasteResource::collection($pastes);
     }
@@ -39,7 +42,7 @@ class PasteController extends Controller
      * Store a paste in the database.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Resources\Json\JsonResource
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(Request $request)
     {
@@ -73,7 +76,7 @@ class PasteController extends Controller
      *
      * @param  \App\Paste  $paste
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Resources\Json\JsonResource
+     * @return \Illuminate\Http\JsonResponse
      */
     public function show(Paste $paste, Request $request)
     {

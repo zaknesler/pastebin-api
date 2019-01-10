@@ -2,7 +2,6 @@
 
 namespace App\Http\Resources;
 
-use App\Http\Resources\UserResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class PasteResource extends JsonResource
@@ -16,13 +15,14 @@ class PasteResource extends JsonResource
     public function toArray($request)
     {
         return [
+            'id' => $this->id,
             'name' => $this->name,
             'slug' => $this->slug,
             'body' => $this->body,
             'visibility' => $this->visibility,
             'language' => $this->language,
             'expires_at' => $this->expires_at,
-            'user' => new UserResource($this->user),
+            'user' => new PublicUserResource($this->user),
         ];
     }
 }

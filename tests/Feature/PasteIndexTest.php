@@ -45,18 +45,4 @@ class PasteIndexTest extends TestCase
 
         $response->assertJsonCount(1, 'data');
     }
-
-    /** @test */
-    function pastes_are_paginated()
-    {
-        factory(Paste::class)->create();
-
-        $response = $this->json('GET', '/api/pastes');
-
-        $response->assertJsonStructure([
-            'data',
-            'links',
-            'meta',
-        ]);
-    }
 }
