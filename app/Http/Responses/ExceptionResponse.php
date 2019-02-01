@@ -57,7 +57,7 @@ class ExceptionResponse extends ApiResponse
     }
 
     /**
-     * Get the list of errors.
+     * Get the list of errors from a validation exception.
      *
      * @return array
      */
