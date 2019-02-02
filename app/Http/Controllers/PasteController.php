@@ -88,7 +88,7 @@ class PasteController extends Controller
             return apiResponse(new PasteExpired);
         }
 
-        return new PasteResource($paste);
+        return new PasteResource($paste->load('user'));
     }
 
     /**

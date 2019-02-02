@@ -21,3 +21,7 @@ $factory->state(App\Paste::class, 'private', [
 $factory->state(App\Paste::class, 'unlisted', [
     'visibility' => 'unlisted',
 ]);
+
+$factory->state(App\Paste::class, 'expired', [
+    'expires_at' => now()->subYears(3),
+]);

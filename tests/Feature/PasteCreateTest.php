@@ -66,12 +66,9 @@ class PasteCreateTest extends TestCase
     /** @test */
     function a_paste_can_be_created_by_a_user()
     {
-        $user = $this->authenticate(null, [
-            'username' => 'Example',
-            'email' => 'example@example.com'
-        ]);
+        $user = factory(User::class)->create();
 
-        $response = $this->json('POST', '/api/pastes', [
+        $response = $this->jsonAs($user, 'POST', '/api/pastes', [
             'name' => 'this is an example paste',
             'body' => 'this is the body of the paste',
             'visibility' => 'public',

@@ -10,10 +10,4 @@ Route::prefix('/auth')->namespace('Auth')->group(function () {
 
 Route::apiResource('/pastes', 'PasteController');
 
-// Route::get('/dropdown', function () {
-//     return response()->json([
-//         'languages' => config('pastebin.languages'),
-//         'expirations' => config('pastebin.expiration_dates'),
-//         'visibilities' => config('pastebin.visibilities'),
-//     ]);
-// });
+Route::get('/my-pastes', 'MyPasteController@index');

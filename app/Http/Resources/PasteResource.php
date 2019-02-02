@@ -22,7 +22,7 @@ class PasteResource extends JsonResource
             'visibility' => $this->visibility,
             'language' => $this->language,
             'expires_at' => $this->expires_at,
-            'user' => new PublicUserResource($this->user),
+            'user' => new PublicUserResource($this->whenLoaded('user')),
         ];
     }
 }
